@@ -52,20 +52,33 @@ using Faces = std::vector<Face>;
 //---------------------------------------------------------------------------
 
 struct Transform {
+    
     struct float4 {
+        typedef float floatVec3 __attribute__ (( vector_size(32) ));
+        
         float x;
         float y;
         float z;
         float w;
 
         float4() = default;
-        float4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+        float4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
 
-        float dot(const Vertex& v) const
-            { return x*v.x + y*v.y + z*v.z + w; }
+        float dot(const Vertex& v) const {
+            floatVec3 vec1 = {x, y, z};
+            floatVec3 vec2 = {v.x, v.y, v.z};
+            floatVec3 resultVec = vec1*vec2;
+            
+            return resultVec[0] + resultVec[1] + resultVec[2] + w;
+        }
 
-        Vertex perspectiveDivide() const
-            { return Vertex{ x/w, y/w, z/w }; }
+        Vertex perspectiveDivide() const {
+            floatVec3 vec1 = {x, y, z};
+            floatVec3 vec2 = {w, w, w};
+            floatVec3 resultVec = vec1/vec2;
+            
+            return Vertex{ resultVec[0], resultVec[1], resultVec[2] };
+        }
     };
 
     float4 rows[4];

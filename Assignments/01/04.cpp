@@ -7,6 +7,7 @@
 #include <numeric>
 #include <span>
 #include <vector>
+#include <thread>
 
 using namespace std;
 
@@ -208,6 +209,33 @@ Distance computePerimeter(const Face& face, const Vertices& vertices) {
     return perimeter;
 }
 
+struct Min {
+    Distance perimeter = std::numeric_limits<Distance>::infinity();
+    Index index = 0;
+};
+
+void computePerimiterForSection(const Faces &faces, const Vertices &vertices, int section, Min *minFace) {
+    
+    auto i = section*(faces.size()/4);
+    auto limit = faces.size();
+    
+    if (section < 3) {
+        limit = (section + 1)*(faces.size()/4) - 1;
+    }
+    
+    cout << "Thread " << section << ": " << endl << "Min: " << i << " Max: " << limit << endl;
+    while (i < limit) {
+        auto perimeter = computePerimeter(faces[i], vertices);
+
+        if (perimeter < minFace -> perimeter) {
+            minFace -> perimeter = perimeter;
+            minFace -> index = i;
+        }
+        
+        i++;
+    }
+}
+
 //----------------------------------------------------------------------------
 //
 //  main - loads the data for the model and then computes the perimeter
@@ -218,21 +246,38 @@ Distance computePerimeter(const Face& face, const Vertices& vertices) {
 int main() {
     Vertices vertices;
     Faces    faces;
-
+    
     readData("lucy.bin", vertices, faces);
 
-    struct Min {
-        Distance perimeter = std::numeric_limits<Distance>::infinity();
-        Index index = 0;
-    } minFace;
+    Min minFace;
+    Min minFaces[4];
 
-    for (auto i = 0; i < faces.size(); ++i) {
+    /*for (auto i = 0; i < faces.size(); ++i) {
         auto perimeter = computePerimeter(faces[i], vertices);
 
         if (perimeter < minFace.perimeter) {
             minFace.perimeter = perimeter;
             minFace.index = i;
         }
+    }*/
+    
+    cout << "Total number of faces: " << faces.size() << endl;
+    
+    thread a[4];
+    
+    for (auto i = 0; i < 4; i++) {
+        a[i] = thread(&computePerimiterForSection, faces, vertices, i, &minFaces[i]);
     }
+    
+    for (auto i = 0; i < 4; i++) {
+        a[i].join();
+    }
+    
+    for (auto i = 0; i < 4; i++) {
+        if (minFaces[i].perimeter < minFace.perimeter) {
+            minFace = minFaces[i];
+        }
+    }
+    
     std::cout << "The smallest triangle is " << minFace.index << "\n";
 }
