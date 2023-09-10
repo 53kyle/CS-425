@@ -9,6 +9,9 @@ Here's a table showing the improvements I did to make the application go faster.
 | [01](01.cpp) | 9.96s | &mdash; | 1041324 | Initial version - no changes |
 | [02](02.cpp) | 5.27s | 1.89x | 2775480 | Threaded Implementation |
 | [03](03.cpp) | 8.90s | 1.12x | 2787564 | Vector Register + Threaded Implementation |
+| [01.5](01.cpp) | 2.04s | 4.89x | 1041320 | Initial version with -Ofast |
+| [02.5](02.cpp) | 2.47s | 4.03x | 1909424 | Threaded Implementation with -Ofast |
+| [03.5](03.cpp) | 4.96s | 2.00x | 2691668 | Vector Register + Threaded Implementation with -Ofast |
 
 ## Profiling Analysis
 
@@ -24,3 +27,6 @@ Looking at the profile, I did get perspectiveDivide() down to only 15% of the pr
 In class, vector registers were introduced to us as a way to compute multiple values in one instruction. In this case, since perspectiveDivide() and dot() are both taking up a lot of time, I thought I'd try reimplementing both functions to use vector registers. However, this actually made the program run significantly slower, nearly taking as much time as the initial version, which is pretty bad since it's still threaded. Using these functions without threads actually made the program run over 2x slower compared to the initial version. 
 
 I suspect the reason this is so slow is because I'm allocating memory in each call of perspectiveDivide() and dot(), which wasn't necessary before. I'll look into solving this as well.
+
+### Using -Ofast
+I found that -Ofast (as the name would imply) was always fastest for all implementations that I have. However, I find it odd that while implementations 02 and 03 are both faster than 01 by default, they're slower when using this optimization flag.
