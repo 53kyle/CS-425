@@ -7,6 +7,7 @@
 #include <numeric>
 #include <span>
 #include <vector>
+#include <thread>
 
 using namespace std;
 
@@ -52,33 +53,20 @@ using Faces = std::vector<Face>;
 //---------------------------------------------------------------------------
 
 struct Transform {
-    
     struct float4 {
-        typedef float floatVec3 __attribute__ (( vector_size(32) ));
-        
         float x;
         float y;
         float z;
         float w;
 
         float4() = default;
-        float4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
+        float4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
-        float dot(const Vertex& v) const {
-            floatVec3 vec1 = {x, y, z};
-            floatVec3 vec2 = {v.x, v.y, v.z};
-            floatVec3 resultVec = vec1*vec2;
-            
-            return resultVec[0] + resultVec[1] + resultVec[2] + w;
-        }
+        float dot(const Vertex& v) const
+            { return x*v.x + y*v.y + z*v.z + w; }
 
-        Vertex perspectiveDivide() const {
-            floatVec3 vec1 = {x, y, z};
-            floatVec3 vec2 = {w, w, w};
-            floatVec3 resultVec = vec1/vec2;
-            
-            return Vertex{ resultVec[0], resultVec[1], resultVec[2] };
-        }
+        Vertex perspectiveDivide() const
+            { return Vertex{ x/w, y/w, z/w }; }
     };
 
     float4 rows[4];
@@ -221,6 +209,33 @@ Distance computePerimeter(const Face& face, const Vertices& vertices) {
     return perimeter;
 }
 
+struct Min {
+    Distance perimeter = std::numeric_limits<Distance>::infinity();
+    Index index = 0;
+};
+
+void computePerimiterForSection(const Faces &faces, const Vertices &vertices, int section, Min *minFace) {
+    
+    auto i = section*(faces.size()/4);
+    auto limit = faces.size();
+    
+    if (section < 3) {
+        limit = (section + 1)*(faces.size()/4) - 1;
+    }
+    
+    cout << "Thread " << section << ": " << endl << "Min: " << i << " Max: " << limit << endl;
+    while (i < limit) {
+        auto perimeter = computePerimeter(faces[i], vertices);
+
+        if (perimeter < minFace -> perimeter) {
+            minFace -> perimeter = perimeter;
+            minFace -> index = i;
+        }
+        
+        i++;
+    }
+}
+
 //----------------------------------------------------------------------------
 //
 //  main - loads the data for the model and then computes the perimeter
@@ -231,21 +246,38 @@ Distance computePerimeter(const Face& face, const Vertices& vertices) {
 int main() {
     Vertices vertices;
     Faces    faces;
-
+    
     readData("lucy.bin", vertices, faces);
 
-    struct Min {
-        Distance perimeter = std::numeric_limits<Distance>::infinity();
-        Index index = 0;
-    } minFace;
+    Min minFace;
+    Min minFaces[4];
 
-    for (auto i = 0; i < faces.size(); ++i) {
+    /*for (auto i = 0; i < faces.size(); ++i) {
         auto perimeter = computePerimeter(faces[i], vertices);
 
         if (perimeter < minFace.perimeter) {
             minFace.perimeter = perimeter;
             minFace.index = i;
         }
+    }*/
+    
+    cout << "Total number of faces: " << faces.size() << endl;
+    
+    thread a[4];
+    
+    for (auto i = 0; i < 4; i++) {
+        a[i] = thread(&computePerimiterForSection, faces, vertices, i, &minFaces[i]);
     }
+    
+    for (auto i = 0; i < 4; i++) {
+        a[i].join();
+    }
+    
+    for (auto i = 0; i < 4; i++) {
+        if (minFaces[i].perimeter < minFace.perimeter) {
+            minFace = minFaces[i];
+        }
+    }
+    
     std::cout << "The smallest triangle is " << minFace.index << "\n";
 }
