@@ -12,10 +12,10 @@ Here's a table showing the improvements I did to make the application go faster.
 | [04](04.cpp) | 12.54s | 0.79x | 1040888 | Further AVX Register Optimization, No Threads |
 | [05](05.cpp) | 6.10s | 1.63x | 2780844 | Second Attempt w/ AVX Register + Threaded Implementation |
 | [01.5](01.cpp) | 1.86s | 4.89x | 1041320 | Initial version with -Ofast |
-| [02.5](02.cpp) | 2.47s | 4.03x | 1909424 | Threaded Implementation with -Ofast |
-| [03.5](03.cpp) | 2.91s | 2.00x | 2691668 | AVX Register + Threaded Implementation with -Ofast |
-| [04.5](04.cpp) | 2.56s | 1.12x | 2787564 | Further AVX Register Optimization, No Threads and -Ofast|
-| [05.5](05.cpp) | 2.8s | 1.12x | 2787564 | Second Attempt w/ AVX Register + Threaded Implementation and -Ofast |
+| [02.5](02.cpp) | 2.47s | 4.03x | 1801448 | Threaded Implementation with -Ofast |
+| [03.5](03.cpp) | 2.91s | 3.42x | 2271924 | AVX Register + Threaded Implementation with -Ofast |
+| [04.5](04.cpp) | 2.56s | 3.89x | 1041100 | Further AVX Register Optimization, No Threads and -Ofast|
+| [05.5](05.cpp) | 2.8s | 3.56x | 2049928 | Second Attempt w/ AVX Register + Threaded Implementation and -Ofast |
 
 ## Profiling Analysis
 
