@@ -15,6 +15,7 @@
 #include <deque>
 #include <iostream>
 #include <iterator>
+#include <thread>
 
 using Digit = unsigned char;
 
