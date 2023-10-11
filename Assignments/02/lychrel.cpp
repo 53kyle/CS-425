@@ -17,6 +17,7 @@
 #include <thread>
 #include <array>
 
+
 #include "LychrelData.h"
 
 // A structure recording the starting number, and its final palindrome.
@@ -40,20 +41,18 @@ int main() {
 
     std::cerr << "Processing " << data.size() << " values ...\n";
 
-    std::array<size_t, MaxThreads> maxIters {0};  // Records the current maximum number of iterations
-    std::array<Records, MaxThreads> recordsArr {}; // list of values that took maxIter iterations
+    std::atomic<size_t> maxIter = 0;  // Records the current maximum number of iterations
+    Records records; // list of values that took maxIter iterations
 
     // Iterate across all available data values, processing them using the 
     //   reverse-digits and sum technique described in class.
     
-    const size_t size = int(data.size()/MaxThreads + 1);
+    const size_t chunkSize = int(data.size()/MaxThreads + 1);
     
     for (int id = 0; id < MaxThreads; id++) {
-        size_t maxIter = maxIters[id];
-        Records records = recordsArr[id];
         std::thread t{[=,&maxIter,&data,&records]() {
             std::vector<Number> numbers;
-            if (data.getNext(size,numbers)) {
+            if (data.getNext(chunkSize,numbers)) {
                 for (int i = 0; i < numbers.size(); i++) {
                     size_t iter = 0;
                     Number n = numbers[i];
@@ -126,15 +125,6 @@ int main() {
     }
 
     // Output our final results
-    
-    size_t maxIter = 0;
-    Records records;
-    for (int i = 0; i < MaxThreads; i++) {
-        if (maxIters[i] > maxIter) {
-            maxIter = maxIters[i];
-            records = recordsArr[i];
-        }
-    }
     
     std::cout << "\nmaximum number of iterations = " << maxIter << "\n";
     for (auto& [number, palindrome] : records) {
