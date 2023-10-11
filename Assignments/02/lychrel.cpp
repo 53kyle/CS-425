@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <array>
 
 #include "LychrelData.h"
 
@@ -39,13 +40,13 @@ int main() {
 
     std::cerr << "Processing " << data.size() << " values ...\n";
 
-    std::array<size_t, MaxThreads> maxIters = {0,0,0,0,0,0,0,0,0,0};  // Records the current maximum number of iterations
+    std::array<size_t, MaxThreads> maxIters {};  // Records the current maximum number of iterations
     Records records; // list of values that took maxIter iterations
 
     // Iterate across all available data values, processing them using the 
     //   reverse-digits and sum technique described in class.
     
-    const size_t size = data.size()/MaxThreads;
+    const size_t size = int(data.size()/MaxThreads + 1);
     
     for (int id = 0; id < MaxThreads; id++) {
         size_t maxIter = maxIters[id];
@@ -54,11 +55,12 @@ int main() {
             const size_t begin = id*size;
             const size_t end = std::min(data.size(), begin + size);
             
-            for (auto i = begin; i < end; ++i) {
-                Number number = data[i];
-                
+            std::vector<Number> numbers;
+            data.getNext(size,numbers);
+            
+            for (int i = 0; i < numbers.size(); i++) {
                 size_t iter = 0;
-                Number n = number;
+                Number n = numbers[i];
 
                 // The Lychrel loop - for any iteration, take the number, reverse
                 //   its digits, and sum those values together.  If that sum
@@ -113,7 +115,7 @@ int main() {
 
                 // Otherwise update our records, which possibly means discarding
                 //   our current maximum and rebuilding our records list.
-                Record record{number, n};
+                Record record{numbers[i], n};
                 if (iter > maxIter) {
                     records.clear();
                     maxIter = iter;
