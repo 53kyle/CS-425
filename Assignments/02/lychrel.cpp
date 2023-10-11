@@ -15,8 +15,7 @@
 #include <iostream>
 #include <vector>
 #include <thread>
-#include <array>
-
+#include <array> 
 
 #include "LychrelData.h"
 
