@@ -6,19 +6,19 @@ Here's a table showing the improvements I did to make the application go faster.
 
 | Version | Time (test/final) | Speedup (test/final) | Memory (KB) (test/final) | Changes |
 | :-----: | ---- | :-----: | :------: | ------- |
-| [0](lychrel0.cpp) | 108.06s/- | &mdash; | 3676/- | Baseline |
-| [0](lychrel0.cpp) | 3.2s/643.31s | 33.8x/- | 3656/4464 | Baseline w/03 optimization |
+| [0](lychrel0.cpp) | 108.06s/2564.50 | &mdash; | 3676/4904 | Baseline |
+| [0](lychrel0.cpp) | 3.2s/643.31s | 33.8x/4x | 3656/4464 | Baseline w/03 optimization |
 | [1](lychrel1.cpp) | 13.04s/- | 8.2x/- | 4028/- | Threaded |
-| [1.1](lychrel1.cpp) | 0.52s/95.17s | 207.8x/x | 3992/4796 | Threaded w/03 optimization |
+| [1.1](lychrel1.cpp) | 0.52s/95.17s | 207.8x/26.9x | 3992/4796 | Threaded w/03 optimization |
 | [2](lychrel2.cpp) | 8.38s/- | 12.9x/- | 4264/- | Scheduling (single value) |
-| [2.1](lychrel2.cpp) | 0.47s/117.09s | 229.9x/x | 4264/36636 | Scheduling (single value) w/03 optimization |
+| [2.1](lychrel2.cpp) | 0.47s/117.09s | 229.9x/21.9x | 4264/36636 | Scheduling (single value) w/03 optimization |
 | [3](lychrel3.cpp) | 8.57s/- | 12.6x/- | 4224/- | Scheduling (multiple value) |
-| [3.1](lychrel3.cpp) | 0.41s/117.36s | 263.6x/x | 4184/36648 | Scheduling (multiple value) w/03 optimization |
+| [3.1](lychrel3.cpp) | 0.41s/117.36s | 263.6x/21.9x | 4184/36648 | Scheduling (multiple value) w/03 optimization |
 | [4](lychrel4.cpp) | 8.54s/- | 12.7x/- | 4208/- | Atomic maxIter |
-| [4.1](lychrel4.cpp) | 0.34s/94.46s | 317.8x/x | 4180/36644 | Atomic maxIter w/03 optimization |
-| [4.2](lychrel4.cpp) | 0.30s/88.6s | 360.2x/x | 4232/36644 | Atomic maxIter w/03 optimization & march=native flag |
-| [5](lychrel5.cpp) | 0.20s/85.40s | 540.3x/x | 4312/36872 | Loop unroll |
-| [6](lychrel6.cpp) | 0.35s/46.97s | 308.7x/x | 4204/38120 | No loop unroll, added barrier and mutex, & removed Number.reverse() calls |
+| [4.1](lychrel4.cpp) | 0.34s/94.46s | 317.8x/27.15x | 4180/36644 | Atomic maxIter w/03 optimization |
+| [4.2](lychrel4.cpp) | 0.30s/88.6s | 360.2x/28.9x | 4232/36644 | Atomic maxIter w/03 optimization & march=native flag |
+| [5](lychrel5.cpp) | 0.20s/85.40s | 540.3x/30x | 4312/36872 | Loop unroll |
+| [6](lychrel6.cpp) | 0.35s/46.97s | 308.7x/54.6x | 4204/38120 | No loop unroll, added barrier and mutex, & removed Number.reverse() calls |
 
 
 ## Profiling Analysis
