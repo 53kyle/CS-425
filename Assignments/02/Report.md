@@ -8,7 +8,7 @@ Here's a table showing the improvements I did to make the application go faster.
 | :-----: | ---- | :-----: | :------: | ------- |
 | [0](lychrel0.cpp) | 108.06s/2564.50 | &mdash; | 3676/4904 | Baseline |
 | [0](lychrel0.cpp) | 3.2s/643.31s | 33.8x/4x | 3656/4464 | Baseline w/03 optimization |
-| [1](lychrel1.cpp) | 13.04s/- | 8.2x/- | 4028/- | Threaded |
+| [1](lychrel1.cpp) | 13.04s/2497.94s | 8.2x/1.03x | 4028/4828 | Threaded |
 | [1.1](lychrel1.cpp) | 0.52s/95.17s | 207.8x/26.9x | 3992/4796 | Threaded w/03 optimization |
 | [2](lychrel2.cpp) | 8.38s/- | 12.9x/- | 4264/- | Scheduling (single value) |
 | [2.1](lychrel2.cpp) | 0.47s/117.09s | 229.9x/21.9x | 4264/36636 | Scheduling (single value) w/03 optimization |
@@ -24,7 +24,8 @@ Here's a table showing the improvements I did to make the application go faster.
 ## Profiling Analysis
 
 ### Notes
-Versions 5 and 6 are both compiled with O3 and march=native.
+- Versions 5 and 6 are both compiled with O3 and march=native.
+- For versions 2, 3 and 4, I didn't test the final values without O3 because the results will likely be very similar to version 1 without 03.
 
 ### Baseline (0)
 Without any optimizations, this program takes a LONG time, especially with the final values. I belive this is because, for 50000 iterations, there are 1-7500 digit-wise additions, 1-7500 reverse-copies of vectors (some of which are very large), and 1-7500 comparison algorithms to check if a Number object is palindomic. That's a lot of math.
