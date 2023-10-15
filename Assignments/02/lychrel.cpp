@@ -240,6 +240,30 @@ int main() {
 
                         n7 = sum;
                     }
+
+                    while (!n8.is_palindrome() && ++iter8 < MaxIterations) {
+                        Number sum(n8.size());   // Value used to store current sum of digits
+                        Number r = n8.reverse(); // reverse the digits of the value
+
+                        auto rd = n8.begin();
+                        
+                        bool carry = false;  // flag to indicate if we had a carry
+
+                        std::transform(n8.rbegin(), n8.rend(), sum.rbegin(),
+                            [&](auto d) {
+                                auto v = d + *rd++ + carry;
+                
+                                carry = v > 9;
+                                if (carry) { v -= 10; }
+                
+                                return v;
+                            }
+                        );
+
+                        if (carry) { sum.push_front(1); }
+
+                        n8 = sum;
+                    }
                     
                     if (iter1 >= maxIter && iter1 < MaxIterations) {
                         Record record{numbers[i], n1};
