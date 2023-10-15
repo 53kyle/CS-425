@@ -27,7 +27,7 @@ Here's a table showing the improvements I did to make the application go faster.
 Versions 5 and 6 are both compiled with O3 and march=native.
 
 ### Baseline (0)
-Without any optimizations, this program takes a LONG time, especially with the final values. I belive this is because, for 50000 iterationss, there are between 1 and 7500 digit-wise additions, 1-7500 reverse-copies of vectors (some of which are very large), and 1-7500comparison algorithms to check if a Number object is palindomic. That's a lot of math.
+Without any optimizations, this program takes a LONG time, especially with the final values. I belive this is because, for 50000 iterations, there are 1-7500 digit-wise additions, 1-7500 reverse-copies of vectors (some of which are very large), and 1-7500 comparison algorithms to check if a Number object is palindomic. That's a lot of math.
 
 ### Threaded (1)
 All I did in this version is split the overall work post-reading the file into 10 threads. This made a huge difference, with a roughly 8x speedup.
@@ -36,16 +36,16 @@ All I did in this version is split the overall work post-reading the file into 1
 In versions 2 and 3, I attempted to even out the load that each thread was taking on by retrieving values via LychrelData's getNext() functions. While this didn't make much of a difference (actually it ran slightly slower), I'm sure it was beneficial to do so.
 
 ### Atomic maxIter (4)
-Prior to making this modification, my method for maxIter was to split maxIter into an array of 10 values and records into 10 separate vectors, then at the end of the program, iterate through them to find the maximum. To my surprise, changing this made a massive difference in execution time. 
+Prior to making this modification, my method for maxIter was to split maxIter into an array of 10 values and records into 10 separate vectors, then at the end of the program, iterate through them to find the maximum. Changing this made a massive difference in execution time. 
 
 ### Loop unroll (5)
-In this version, all I did was attempt to reduce the number of comparisons the largest in the main function would make by 8x. However, this hardly made a difference, which I should've expected considering those comparisons don't take very long relative to everything else.
+In this version, all I did was attempt to reduce the number of comparisons the largest loop in the main function would make. However, this hardly made a difference, which I should've expected considering those comparisons don't take very long relative to everything else.
 
 ### No loop unroll, added barrier and mutex, & removed Number.reverse() calls (5)
-This version, by far, made the biggest difference in execution time. The first thing I did here was undo everything I did in version 5, since I didn't think it made enough of a difference (and actually made a negative impact on my own, faster machine). Secondly, I added a barrier and mutex to protect against data race, which I noticed did cause incorrect output every so often. Finally, I noticed that Number 'r' wasn't actually doing anything in summing the regular and reverse numbers, so I removed it. That's where the majority of the time savings here came from.
+This version, by far, made the biggest difference in execution time. The first thing I did here was undo everything I did in version 5, since I didn't think it made enough of a difference (and actually made a negative impact on my own, faster machine). Secondly, I added a barrier and mutex to protect against data race, which I noticed did cause incorrect output every so often. Finally, I noticed that Number 'r' wasn't actually doing anything in summing the regular and reverse numbers, so I removed it. That's where the majority of the time savings here came from, since it eliminated all of the reverse-copies.
 
 ### Using -O3
-I can't explain why, but -O3 actually runs significantly faster than -Ofast on blue. I'm talking -Ofast is over 20 seconds slower. On my own machine, this isn't the case, but the difference between the two is negligible.
+I can't explain why, but -O3 actually runs significantly faster than -Ofast on blue. -Ofast is over 20 seconds slower. On my own machine, this isn't the case, but the difference between the two is negligible there.
 
 ### Using -march=native
-This also makes a decent difference on blue and hardly any difference on my own machine. I'm guessing it's due to a lack of optimization for apple silicon, and/or the lack of certain registers in apple silicon (I know AVX registers have no equivalent).
+This also makes a decent difference on blue and hardly any difference on my own machine. I'm guessing it's due to a lack of optimization for apple silicon, and/or the lack of certain registers in apple silicon (for instance, I know AVX registers have no equivalent).
