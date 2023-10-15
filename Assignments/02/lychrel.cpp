@@ -42,10 +42,15 @@ int main() {
     LychrelData data;
 
     std::cerr << "Processing " << data.size() << " values ...\n";
-
+    
+    // maxIter is atomic since all threads may access and modify it
     std::atomic<size_t> maxIter = 0;  // Records the current maximum number of iterations
+    
     Records records; // list of values that took maxIter iterations
+    
+    // mutex m is used to protect against data race in accessing or modifying maxIter and modifying the records vector
     std::mutex m;
+    // barrier b ensures that all threads exit at the same time
     std::barrier b{MaxThreads};
 
     // Iterate across all available data values, processing them using the
@@ -54,9 +59,12 @@ int main() {
     const size_t chunkSize = int(data.size()/MaxThreads + 1);
     
     for (int id = 0; id < MaxThreads; id++) {
+        // id is the only variable we pass by value since it is constant and unique for each thread
         std::thread t{[&,id]() {
+            // numbers will contain chunkSize Number objects from data
             std::vector<Number> numbers;
-            
+            // data.getNext retrieves chunkSize number objects from data and places them in numbers vector
+            // this is to ensure that each thread has a roughly equal amount of work to do
             if (data.getNext(chunkSize,numbers)) {
                 for (int i = 0; i < numbers.size(); i++) {
                     size_t iter = 0;
@@ -105,6 +113,7 @@ int main() {
                         n = sum;
                     }
                     
+                    // lock_guard ensures that only one thread can compute the following lines of code at once
                     std::lock_guard lock{m};
                     if (iter < MaxIterations && iter >= maxIter) {
                         Record record{numbers[i], n};
