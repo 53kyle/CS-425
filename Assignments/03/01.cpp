@@ -20,11 +20,11 @@
 //
 //  (Don't use any of them.  Generally, above 9000 is usually pretty clear)
 //
-const uint16_t DefaultPort = ; // Update this variable with your assigned port value
+const uint16_t DefaultPort = 8134; // Update this variable with your assigned port value
 
 int main(int argc, char* argv[]) {
     uint16_t port = argc > 1 ? std::stol(argv[1]) : DefaultPort;
-
+    
     // Opens a connection on the given port.  With a suitable URL
     //
     //     http://<hostname>:<port> (e.g., http://blue.cs.sonoma.edu:8000)
