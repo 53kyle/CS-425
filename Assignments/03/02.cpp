@@ -23,24 +23,24 @@
 const uint16_t DefaultPort = 8134; // Update this variable with your assigned port value
 
 int main(int argc, char* argv[]) {
-    uint16_t port = argc > 1 ? std::stol(argv[1]) : DefaultPort;
-    
-    // Opens a connection on the given port.  With a suitable URL
-    //
-    //     http://<hostname>:<port> (e.g., http://blue.cs.sonoma.edu:8000)
-    //
-    //    this will set up networking socket at the given port, and wait
-    //    for another application (like a web browser) to start a
-    //    conversation.
-    //
-    // When you connect from your web browser, use your unique port value
-    //   after the color (:) in the URL.
-    Connection connection(port);
+	uint16_t port = argc > 1 ? std::stol(argv[1]) : DefaultPort;
+	
+	// Opens a connection on the given port.  With a suitable URL
+	//
+	//     http://<hostname>:<port> (e.g., http://blue.cs.sonoma.edu:8000)
+	//
+	//    this will set up networking socket at the given port, and wait
+	//    for another application (like a web browser) to start a
+	//    conversation.
+	//
+	// When you connect from your web browser, use your unique port value
+	//   after the color (:) in the URL.
+	Connection connection(port);
 
-    // Process sessions.  A session begins with a web browser making a
-    //   request.  When the request is made, our connection "accepts"
-    //   the connection, and starts a session.
-    while (connection) {
+	// Process sessions.  A session begins with a web browser making a
+	//   request.  When the request is made, our connection "accepts"
+	//   the connection, and starts a session.
+	while (connection) {
 		// Create an asynchronous task so that we can retrieve images asynchronously...theoretically.
 		auto future = std::async(std::launch::async, [&]() {
 			// A session is composed of a bunch of requests (from the "client",
@@ -105,5 +105,5 @@ int main(int argc, char* argv[]) {
 			//   message, which indicates this session is over.
 			session << response;
 		});
-    }
+	}
 }
