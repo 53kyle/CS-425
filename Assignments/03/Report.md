@@ -6,11 +6,11 @@ Here's a table showing the improvements I did to make the application go faster.
 
 | Version | Time | Speedup | Changes |
 | :-----: | ---- | :-----: | ------- |
-| [01](lychrel0.cpp) | 208s | &mdash; | Baseline |
-| [02](lychrel0.cpp) | 234s | 0.88x | Simple asynchronous task |
-| [03](lychrel1.cpp) | 222s | 0.93x | Packaged task |
-| [04](lychrel1.cpp) | 114s | 1.82x | Queued tasks |
-| [05](lychrel2.cpp) | 109s | 1.91x | More queued tasks |
+| [01](01.cpp) | 208s | &mdash; | Baseline |
+| [02](02.cpp) | 234s | 0.88x | Simple asynchronous task |
+| [03](03.cpp) | 222s | 0.93x | Packaged task |
+| [04](04.cpp) | 114s | 1.82x | Queued tasks |
+| [05](05.cpp) | 109s | 1.91x | More queued tasks |
 
 
 ## Profiling Analysis
