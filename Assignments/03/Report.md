@@ -11,6 +11,7 @@ Here's a table showing the improvements I did to make the application go faster.
 | [03](03.cpp) | 222s | 0.93x | Packaged task |
 | [04](04.cpp) | 114s | 1.82x | Queued tasks |
 | [05](05.cpp) | 109s | 1.91x | More queued tasks |
+| [06](06.cpp) | 111s | 1.87x | Cleaned up queued tasks | 
 
 
 ## Profiling Analysis
@@ -34,5 +35,5 @@ For this version, I started off with a fresh slate, and it dawned on me that if 
 For this version, I cleaned up my code, and now instead of running 10 tasks, I'm running a whopping 300. It's probably overkill and might even be bad practice, but I figured since the system manages how asynchronous tasks run, and since we have a theoretical 300 images to retrieve, I might as well throw a ton of tasks at the problem. Runtime was a bit faster than version 04, so I don't think I made things worse here at the very least.
 NOTE: It seems like the bottleneck here will be the number of threads the web browser uses. For example, if google chrome uses 10 threads, we won't need more than that for our server.
 
-### Conclusion
-In my case, because my machine has 10 cores total and both safari and google chrome seem to take advantage of all 10, version 04 is going to be the fastest the server can run since it uses 10 threads as well. Version 05 is ultimately pointless because no more than 10 tasks will ever execute at once.
+### Cleaned up queued tasks (06)
+For this version, I just cleaned up version 04 exactly as I did for version 05, but this time just left it at 10 tasks. As far as I can tell, that's the maximum any web browser will take advantage of, so as long as one user accesses the server at once, there won't be any decrease in performance.
