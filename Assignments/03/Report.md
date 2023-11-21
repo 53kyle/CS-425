@@ -32,3 +32,7 @@ For this version, I started off with a fresh slate, and it dawned on me that if 
 
 ### More queued tasks (05)
 For this version, I cleaned up my code, and now instead of running 10 tasks, I'm running a whopping 300. It's probably overkill and might even be bad practice, but I figured since the system manages how asynchronous tasks run, and since we have a theoretical 300 images to retrieve, I might as well throw a ton of tasks at the problem. Runtime was a bit faster than version 04, so I don't think I made things worse here at the very least.
+NOTE: It seems like the bottleneck here will be the number of threads the web browser uses. For example, if google chrome uses 10 threads, we won't need more than that for our server.
+
+### Conclusion
+In my case, because my machine has 10 cores total and both safari and google chrome seem to take advantage of all 10, version 04 is going to be the fastest the server can run since it uses 10 threads as well. Version 05 is ultimately pointless because no more than 10 tasks will ever execute at once.
